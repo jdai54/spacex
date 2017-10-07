@@ -5,15 +5,16 @@ class WelcomeController < ApplicationController
 
   def index
     response = HTTParty.get("https://api.spacexdata.com/v1/launches/latest")
-    render json: response.parsed_response
 
-    if response.code == 200
-      puts "All good!"
-    elsif 404
-      puts "Not found!"
-    else 500..600
-      puts "Oops we messed up"
+    if response.code == 404
+      render json: response = {"404": "Not found!"}
+    elsif response.code == 500..600
+      render json: response = {"500": "Oops we messed up"}
+    # else
+    #   render json: response.parsed_response
     end
+
+    @launches = JSON.parse(response)
   end
 
   def about
